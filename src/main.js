@@ -12,6 +12,7 @@ if (!global.fetch) {
 // import fetch from 'isomorphic-fetch';
 
 var HOST = 'https://www.bungie.net/platform/Destiny/'; // the is address to Bungie's API
+var API_KEY = '';
 
 /** FIXME: this could potentially be broken up into smaller blocks
  *
@@ -50,7 +51,15 @@ let createRequest = (lib, method) => {
 
                 return params;
             })
-            .then(params => fetch(HOST + template(params), _.assign(method.options, { headers: headers, body: JSON.stringify(params) })))
+            .then(params => fetch(HOST + template(params), _.assign(method.options, { 
+                headers: function(){
+                    if (API_KEY.length > 0){
+                      headers['X-API-Key'] = API_KEY;
+                    }
+                    return headers;
+                },
+                body: JSON.stringify(params) 
+            })))
             .then(UTILS.json)
             .then(UTILS.unwrapDestinyResponse);
     };
@@ -61,14 +70,27 @@ let createRequest = (lib, method) => {
 /**
  * preparing library for export
  */
-let Destiny = (host='https://www.bungie.net/platform/Destiny/') => {
-
-    if (_.isString(host)) {
-        HOST = host;
+let Destiny = (config) => {
+    if (_.isString(config)) {
+        HOST = config;
+        console.log("Supplying host param as a string is deprecated, please use config object.");
     } else {
-        UTILS.error(`${ host } is not a valid URL.`);
-    }
+        if(_.isPlainObject(config)){
+            let host = config.host || 'https://www.bungie.net/platform/Destiny/';
+            if (!_.isString(host)){
+                UTILS.error(`${ host } is not a valid URL.`);
+                return;
+            }
+            HOST = config.host;
 
+            let apiKey = config.apiKey || '';
+            if (!_.isString(apiKey)){
+                UTILS.error(`${ apiKey } is not a valid API Key.`);
+                return;
+            }
+            API_KEY = apiKey;
+        }
+    }
     return ENDPOINTS.reduce(createRequest, {});
 };
 
