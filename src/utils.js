@@ -13,7 +13,7 @@ export const UTILS = {
     indentity: x => x,
     noop: () => {},
     error: message => {
-        throw new DestinyError(message);
+        throw DestinyError(message);
     },
     assignMap: obj => _.partialRight(_.assign, obj),
     json: res => res.json(),
