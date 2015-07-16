@@ -13,6 +13,22 @@ Please feel free submit issues and requests, or [get in touch](//www.twitter.com
 
 Unfortunately you cannot "hit" `https://bungie.net` directly. So if you plan to use this library in client-side code, due to `CORS` you'll have to run your own proxy server to handle your requests to Bungie for you. I have added an example proxy server ([`proxy.js`](https://github.com/waltfy/destiny/blob/develop/proxy.js)). Simply run `node proxy.js`. Credit to [@phuu](https://github.com/phuu).
 
+### Config Options
+You can pass a config object with the following properties:
+
+`config` (`Object`)
+
+  - `host` - `string (optional)`
+  - `apiKey` - `string (optional)`, Though this is optional, api key may become mandatory by Bungie in the future
+
+Example:
+```js
+var destinyClient = require("destiny-client")({
+	host: 'https://{{ proxy }}:{{ your-port }} /platform/Destiny/',
+	apiKey: '1234567890123456789'
+});
+```
+
 ### Node
 
 `npm install destiny-client`
@@ -20,7 +36,9 @@ Unfortunately you cannot "hit" `https://bungie.net` directly. So if you plan to 
 Note that if you wish, you may override the default host (`https://bungie.net/`) with your own. i.e. If you have a proxy server to handle your requests. See [proxy-server](#proxy-server) instructions above. Also works with [React Native](https://facebook.github.io/react-native/).
 
 ```js
-var destiny = require('destiny-client')();
+var destiny = require('destiny-client')({ 
+  apiKey: ' {{ your-api-key}} '
+});
 
 destiny
   .Search({
@@ -40,7 +58,10 @@ Simply include [`destiny.js`](https://raw.githubusercontent.com/waltfy/destiny/d
 <script src='destiny.js' type='text/javascript'></script>
 <script type="text/javascript">
 
-    var destiny = Destiny('http://{{ host }}:{{ yourport }}/platform/Destiny/'); // this is your proxy server
+    var destiny = Destiny({ 
+      host: 'http://{{ host }}:{{ yourport }}/platform/Destiny/',
+      apiKey: '{ your-api-key }'
+    }); // this is your proxy server and api key
 
     destiny
         .Search({
