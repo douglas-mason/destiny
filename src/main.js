@@ -81,7 +81,7 @@ let Destiny = (config) => {
                 UTILS.error(`${ host } is not a valid URL.`);
                 return;
             }
-            HOST = config.host;
+            HOST = host;
 
             let apiKey = config.apiKey || '';
             if (!_.isString(apiKey)){
